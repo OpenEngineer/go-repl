@@ -1,4 +1,4 @@
-// Lightweight Golang REPL library, inspired by *xterm*. You provide the Eval function, and go-repl does the rest.
+// Lightweight Golang REPL library, inspired by xterm. You provide the Eval function, and go-repl does the rest.
 package repl
 
 import (

@@ -26,7 +26,7 @@ func main() {
 	h := &MyHandler{}
 	h.r = repl.NewRepl(h)
 
-	if err := h.r.Run(); err != nil {
+	if err := h.r.Loop(); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -40,8 +40,8 @@ func (h *MyHandler) Tab(buffer string) string {
 }
 
 // first return value is for stdout, second return value is for history
-func (h *MyHandler) Eval(line string) string {
-	fields := strings.Fields(line)
+func (h *MyHandler) Eval(buffer string) string {
+	fields := strings.Fields(buffer)
 
 	if len(fields) == 0 {
 		return ""

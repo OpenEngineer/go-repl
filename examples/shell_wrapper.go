@@ -22,12 +22,12 @@ func (h *ShellWrapper) Tab(buffer string) string {
 	return "  "
 }
 
-func (h *ShellWrapper) Eval(line string) string {
+func (h *ShellWrapper) Eval(buffer string) string {
 	// upon eval the Stdin should be unblocked
-	if strings.TrimSpace(line) != "" {
+	if strings.TrimSpace(buffer) != "" {
 		endCmd := make(chan bool)
 
-		if line == "quit" {
+		if buffer == "quit" {
 			h.r.Quit()
 			return ""
 		}
@@ -36,7 +36,7 @@ func (h *ShellWrapper) Eval(line string) string {
 			h.r.UnmakeRaw()
 			defer h.r.MakeRaw()
 
-			fields := strings.Fields(line)
+			fields := strings.Fields(buffer)
 
 			cmdName, args := fields[0], fields[1:]
 
@@ -75,7 +75,7 @@ func main() {
 	h := &ShellWrapper{}
 	h.r = repl.NewRepl(h)
 
-	if err := h.r.Run(); err != nil {
+	if err := h.r.Loop(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}
 }
