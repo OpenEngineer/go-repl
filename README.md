@@ -6,7 +6,7 @@ Your REPL's using this library will enjoy the following features:
 * Session history with *reverse-search*
   * Ctrl-R to start *reverse-search*
   * Most edit commands, except the most basic ones, exit the *reverse-search* mode
-  * use Up/Down to cycle through a filtered list of history entries
+  * Use Up/Down to cycle through a filtered list of history entries
 * The input buffer is redrawn when a resize is detected
 * Status bar at bottom with current working dir and other info
 * Truncation of very long inputs (status bar displays info about cursor position)
@@ -15,7 +15,7 @@ Your REPL's using this library will enjoy the following features:
    * Ctrl-Right/Left: move cursor one word at a time
    * Up/Down: cycle through history
    * Backspace/Delete: works as expected
-   * Shift-Enter: enter newline into buffer without invoking `Eval`
+   * Shift-Enter: insert newline into buffer without invoking `Eval`
    * Ctrl-A or Home: move to start of buffer
    * Ctrl-E or End: move to end of buffer
    * Ctrl-W: delete preceding word

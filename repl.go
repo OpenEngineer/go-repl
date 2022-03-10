@@ -13,18 +13,15 @@ import (
 )
 
 var (
-	// Period between polls for terminal size changes
-	// 10ms is the default, human reaction times are an order of magnitude slower than this
-	// and auto generated stdin bytes are an order of magnitude faster than this
+	// Period between polls for terminal size changes.
+	// 10ms is the default, human reaction times are an order of magnitude slower than this interval,
+	// and auto generated escape sequence bytes are an order of magnitude faster than this interval.
 	SIZE_POLLING_INTERVAL = 10 * time.Millisecond
 
 	// Used by the package maintainer:
-	DEBUG = "" // use a non-empty string as the destination file of debug information
+	DEBUG = "" // a non-empty string specifies the destination file for debugging info
 )
 
-// Repl is the core object of this package
-// Create a new Repl using NewRepl()
-// Start the loop using Run()
 type Repl struct {
 	handler Handler
 
@@ -52,7 +49,7 @@ type Repl struct {
 	debug *os.File
 }
 
-// Create a new Repl using your custom Handler logic
+// Create a new `Repl` using your custom `Handler`.
 func NewRepl(handler Handler) *Repl {
 
 	r := &Repl{
@@ -160,7 +157,7 @@ func (r *Repl) stopSearch() {
 func (r *Repl) dispatch(b []byte) {
 	n := len(b)
 
-	r.log("keypress: %t\n", b)
+	r.log("keypress: %v\n", b)
 
 	if n == 1 {
 		switch b[0] {
@@ -321,6 +318,35 @@ func (r *Repl) dispatch(b []byte) {
 				}
 			}
 		}
+	} else if len(b) > 6 && b[n-1] == 82 {
+		// go backwards until the esc char
+		for i := n - 2; i >= 0; i-- {
+			if b[i] == 27 && b[i+1] == 91 {
+				parts := strings.Split(string(b[i+2:n-1]), ";")
+				row, err := strconv.Atoi(parts[0])
+				if err == nil {
+					col, err := strconv.Atoi(parts[1])
+					if err == nil {
+						r.handleCursorQuery(col-1, row-1)
+					}
+				}
+
+				printable := make([]byte, 0)
+				for _, b_ := range b[0:i] {
+					if b_ >= 32 {
+						printable = append(printable, b_)
+					}
+				}
+
+				if len(printable) > 0 {
+					r.clearStatus()
+					r.addBytesToBuffer(printable)
+					r.writeStatus()
+				}
+
+				break
+			}
+		}
 	} else {
 		//r.cleanAndAddToBuffer(b)
 	}
@@ -383,7 +409,6 @@ func (r *Repl) addBytesToBuffer(bs []byte) {
 		len_ := r.bufferLen()
 		r.buffer = append(r.buffer, bs...)
 
-		r.log("adding byte, calcheight:%d, innerHeight: %d\n", r.calcHeight(), r.innerHeight())
 		if !r.overflow() {
 			needSync := false
 			for _, b := range bs {
@@ -488,8 +513,6 @@ func (r *Repl) cursorCoord(bufferPos int) (int, int) {
 
 	y += r.promptRow
 
-	r.log("cursor coord: %d, %d (viewStart: %d, bufferPos: %d)\n", x, y, r.viewStart, bufferPos)
-
 	return x, y
 }
 
@@ -504,14 +527,6 @@ func (r *Repl) calcBufferPos(x, y int) int {
 			return i - 1 + r.viewStart
 		} else if yc == y && xc >= x {
 			r.log("calc pos for %d,%d -> %d (%d,%d)\n", x, y, i+r.viewStart, xc, yc)
-
-			// debug
-			{
-				xCheck, yCheck := r.cursorCoord(i + r.viewStart)
-				if xCheck != xc || yCheck != yc {
-					r.log("bad calc: x %d should be %d, y %d should be %d\n", xc, xCheck, yc, yCheck)
-				}
-			}
 			return i + r.viewStart
 		}
 
@@ -658,6 +673,7 @@ func (r *Repl) evalBuffer() {
 
 	r.newLine()
 
+	// input that is sent to stdin while the handler is blocking, is returned the next time we read bytes from the stdinreader, followed by a sequence indicating the new cursor position (due to queryCursorPos() being called below), so the routine that handles the cursor pos query should also handle any preceding bytes
 	out := r.handler.Eval(strings.TrimSpace(string(r.buffer)))
 
 	if len(out) > 0 {
@@ -1273,7 +1289,7 @@ func (r *Repl) writeStatus() {
 		left, right := r.statusFields()
 
 		// start highlighting
-		fmt.Fprintf(os.Stdout, "%s[48;5;247m%s[30m", ESC, ESC)
+		highlight()
 
 		if len(left) > w-len(right) {
 			left = left[0 : w-len(right)]
@@ -1288,7 +1304,8 @@ func (r *Repl) writeStatus() {
 		fmt.Print(right)
 
 		// end highlighting
-		fmt.Fprintf(os.Stdout, "%s[0m", ESC)
+		resetDecorations()
+
 		r.syncCursor()
 	}
 }
@@ -1323,7 +1340,8 @@ func (r *Repl) updateSearchResult() {
 ///////////////////
 
 // Start the REPL loop.
-// The terminal is set to raw mode, so any further calls to fmt.Print() won't behave as expected and will conflict with your REPL.
+//
+// `Run` sets the terminal to raw mode, so any further calls to `fmt.Print`, or similar functions, won't behave as expected, and will garble your REPL.
 func (r *Repl) Run() error {
 	// the terminal needs to be in raw mode, so we can intercept the control sequences
 	// (the default canonical mode isn't good enough for repl's)
@@ -1351,24 +1369,24 @@ func (r *Repl) Run() error {
 	return nil
 }
 
-// Quit the program cleanly
+// Exit the REPL program cleanly. Performs the following steps:
 //  1. cleans the screen
 //  2. returns the cursor to the appropriate position
 //  3. unsets terminal raw mode
 //
-// Use Quit() instead of os.Exit()
+// Important: use this method instead of `os.Exit`.
 func (r *Repl) Quit() {
 	r.quit()
 }
 
-// Unset the raw mode in case you want to run a curses style command inside your REPL session
+// Unset the raw mode in case you want to run a curses-like command inside your REPL session (e.g. `vi` or `top`). Remember to call `MakeRaw` after the command finishes.
 func (r *Repl) UnmakeRaw() {
 	r.onEnd()
 
 	r.onEnd = nil
 }
 
-// Explicitely set the terminal back to raw mode after calling UnmakeRaw()
+// Explicitely set the terminal back to raw mode after a call `UnmakeRaw`.
 func (r *Repl) MakeRaw() error {
 	// we need the term package as a platform independent way of setting the connected terminal emulator to raw mode
 	fd := int(os.Stdin.Fd())

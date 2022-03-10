@@ -7,18 +7,18 @@ import (
 
 // TODO: dont use the functions that aren't supported by Windows
 
-const ESC = "\033"
+const _ESC = "\033"
 
 func csi1(n int, char byte) {
-	fmt.Fprintf(os.Stdout, "%s[%d%c", ESC, n, char)
+	fmt.Fprintf(os.Stdout, "%s[%d%c", _ESC, n, char)
 }
 
 func csi2(n int, m int, char byte) {
-	fmt.Fprintf(os.Stdout, "%s[%d;%d%c", ESC, n, m, char)
+	fmt.Fprintf(os.Stdout, "%s[%d;%d%c", _ESC, n, m, char)
 }
 
 func esc1(c byte) {
-	fmt.Fprintf(os.Stdout, "%s[%c", ESC, c)
+	fmt.Fprintf(os.Stdout, "%s[%c", _ESC, c)
 }
 
 func control(char byte) {
@@ -78,4 +78,13 @@ func queryCursorPos() {
 // from 0-based to 1-based!
 func moveCursorTo(x, y int) {
 	csi2(y+1, x+1, 'H')
+}
+
+func highlight() {
+	// black text (30) on a grey/white background
+	fmt.Fprintf(os.Stdout, "%s[48;5;247m%s[30m", _ESC, _ESC)
+}
+
+func resetDecorations() {
+	fmt.Fprintf(os.Stdout, "%s[0m", _ESC)
 }

@@ -2,3 +2,5 @@ main
 go.sum
 *.log
 log.*
+examples/basic_repl
+examples/shell_wrapper

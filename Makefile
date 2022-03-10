@@ -1,8 +1,15 @@
 all: ./examples/simple/main
 
-./examples/simple/main: ./*.go ./examples/simple/*.go
-	cd ./examples/simple; \
-	go build main.go
+#./examples/basic_repl: ./*.go ./examples/basic_repl.go
+	#cd ./examples; \
+	#go build basic_repl.go
 
-test: ./examples/simple/main
-	./examples/simple/main
+./examples/%: ./examples/%.go ./*.go 
+	cd ./examples; \
+	go build $(notdir $<)
+
+test: ./examples/basic_repl
+	./examples/basic_repl
+
+test-shell_wrapper: ./examples/shell_wrapper
+	./examples/shell_wrapper

@@ -70,6 +70,8 @@ func (h *ShellWrapper) Eval(line string) string {
 }
 
 func main() {
+	fmt.Println("Try \"vi\" or \"top\" and see what happens...")
+
 	h := &ShellWrapper{}
 	h.r = repl.NewRepl(h)
 

@@ -5,12 +5,14 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	repl "github.com/openengineer/go-repl"
 )
 
 var helpMessage = `help              display this message
 add <int> <int>   add two numbers
+sleep             sleep for 5s
 quit              quit this program`
 
 // implements repl.Handler interface
@@ -55,6 +57,9 @@ func (h *MyHandler) Eval(line string) string {
 			} else {
 				return add(args[0], args[1])
 			}
+		case "sleep":
+			time.Sleep(5 * time.Second)
+			return ""
 		case "quit":
 			h.r.Quit()
 			return ""

@@ -1,6 +1,6 @@
 package repl
 
-// This interface must be implemented in order to be able to use Repl with your own logic
+// Implement this interface in order to use `Repl` with your custom logic.
 type Handler interface {
 	Prompt() string
 	Eval(line string) string
