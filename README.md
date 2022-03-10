@@ -1,8 +1,8 @@
 # go-repl
 
-Golang REPL library, inspired by *xterm*
+Lightweight Golang REPL library, inspired by *xterm*. You provide the `Eval` function, and `go-repl` does the rest.
 
-Your REPLs using this library will enjoy the following features:
+Your REPLs that use this library will enjoy the following features:
 * Session history with *reverse-search*
   * Ctrl-R to start *reverse-search*
   * Most edit commands, except the most basic ones, exit the *reverse-search* mode
