@@ -1,4 +1,4 @@
-all: ./examples/simple/main
+all: ./examples/basic_repl
 
 #./examples/basic_repl: ./*.go ./examples/basic_repl.go
 	#cd ./examples; \

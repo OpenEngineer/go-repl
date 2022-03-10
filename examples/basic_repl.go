@@ -13,6 +13,7 @@ import (
 var helpMessage = `help              display this message
 add <int> <int>   add two numbers
 sleep             sleep for 5s
+read              read some user input
 quit              quit this program`
 
 // implements repl.Handler interface
@@ -60,6 +61,9 @@ func (h *MyHandler) Eval(buffer string) string {
 		case "sleep":
 			time.Sleep(5 * time.Second)
 			return ""
+		case "read":
+			info := h.r.ReadLine(true)
+			return "read=" + info
 		case "quit":
 			h.r.Quit()
 			return ""

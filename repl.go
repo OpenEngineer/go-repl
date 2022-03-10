@@ -1342,7 +1342,7 @@ func (r *Repl) updateSearchResult() {
 
 // Start the REPL loop.
 //
-// Loop sets the terminal to raw mode, so any further calls to fmt.Print or similar, won't behave as expected, and will garble your REPL.
+// Loop sets the terminal to raw mode, so any further calls to fmt.Print or similar, might not behave as expected and can garble your REPL.
 func (r *Repl) Loop() error {
 	// the terminal needs to be in raw mode, so we can intercept the control sequences
 	// (the default canonical mode isn't good enough for repl's)
@@ -1402,4 +1402,36 @@ func (r *Repl) MakeRaw() error {
 	}
 
 	return nil
+}
+
+func (r *Repl) ReadLine(echo bool) string {
+	buffer := make([]byte, 0)
+
+	for {
+		r.reader.read()
+
+		bts := <-r.reader.bytes
+
+		// a mini version of dispatch
+		if len(bts) == 1 && bts[0] == 13 {
+			if echo {
+				fmt.Print("\n\r")
+			}
+			break
+		} else {
+			for _, b := range bts {
+				if b == 27 {
+					break
+				} else if b >= 32 {
+					if echo {
+						fmt.Print(string([]byte{b}))
+					}
+
+					buffer = append(buffer, b)
+				}
+			}
+		}
+	}
+
+	return string(buffer)
 }
