@@ -1,6 +1,6 @@
 # go-repl
 
-Lightweight Golang REPL library, inspired by *xterm*. You provide the `Eval` function, and `go-repl` does the rest.
+Lightweight Golang REPL library, inspired by GNU Readline. You provide the `Eval` function, and `go-repl` does the rest.
 
 Your REPLs that use this library will enjoy the following features:
 * Session history with *reverse-search*
@@ -28,10 +28,11 @@ Your REPLs that use this library will enjoy the following features:
    * Ctrl-Y: insert previous deletion (from Ctrl-K, Ctrl-U, Ctrl-Q or Ctrl-W)
 
 Notes: 
-*  Doesn't depend on *ncurses*
-*  Performance hasn't yet been optimized and I haven't yet tested all corner cases exhaustively
-*  Might not work in Windows command prompt (keystroke codes could differ, ANSI escape sequences might not be supported, the method that sets terminal to raw mode might not work)
-*  No support for clipboards yet
+* Doesn't depend on *ncurses*
+* Performance hasn't yet been optimized and I haven't yet tested all corner cases exhaustively
+* Might not work in Windows command prompt (keystroke codes could differ, ANSI escape sequences might not be supported, the method that sets terminal to raw mode might not work)
+* No vi edit mode
+* No support for clipboards yet
 
 # Usage
 
