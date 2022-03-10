@@ -2,7 +2,7 @@
 
 Golang REPL library, inspired by *xterm*
 
-Your REPL's using this library will enjoy the following features:
+Your REPLs using this library will enjoy the following features:
 * Session history with *reverse-search*
   * Ctrl-R to start *reverse-search*
   * Most edit commands, except the most basic ones, exit the *reverse-search* mode
