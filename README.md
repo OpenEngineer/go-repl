@@ -49,7 +49,7 @@ type Handler interface {
 }
 ```
 
-Here is a complete example (can also be found in `./examples/simple/main.go`):
+Here is a complete example (can also be found in `./examples/basic_repl.go`):
 
 ```golang
 package main
