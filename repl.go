@@ -55,7 +55,7 @@ type Repl struct {
 // Create a new Repl using your custom Handler logic
 func NewRepl(handler Handler) *Repl {
 
-	t := &Repl{
+	r := &Repl{
 		handler:     handler,
 		historyDir:  "",
 		history:     make([][]byte, 0),
@@ -74,7 +74,7 @@ func NewRepl(handler Handler) *Repl {
 		width:       0,
 		height:      0,
 		onEnd:       nil,
-		debug:       debug,
+		debug:       nil,
 	}
 
 	if DEBUG != "" {
@@ -82,10 +82,10 @@ func NewRepl(handler Handler) *Repl {
 		if err != nil {
 			panic(err)
 		}
-		t.debug = debug
+		r.debug = debug
 	}
 
-	return t
+	return r
 }
 
 ///////////////////

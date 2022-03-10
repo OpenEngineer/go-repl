@@ -1,0 +1,4 @@
+main
+go.sum
+*.log
+log.*

@@ -1,4 +1,4 @@
-package terminal
+package repl
 
 // This interface must be implemented in order to be able to use Repl with your own logic
 type Handler interface {

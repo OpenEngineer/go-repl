@@ -1,4 +1,4 @@
-package terminal
+package repl
 
 import (
 	"bufio"
