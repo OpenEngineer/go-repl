@@ -108,41 +108,6 @@ func (r *Repl) innerHeight() int {
 	}
 }
 
-func (r *Repl) run(debug bool) error {
-	// the terminal needs to be in raw mode, so we can intercept the control sequences
-	// (the default canonical mode isn't good enough for repl's)
-	if err := r.MakeRaw(); err != nil {
-		return err
-	}
-
-	if debug {
-		var err error
-		r.debug, err = os.Create("term_debug.log")
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	r.reader.start()
-
-	r.notifySizeChange()
-
-	r.printPrompt()
-
-	queryCursorPos() // get initial prompt position
-
-	// loop forever
-	for {
-		r.reader.read()
-
-		bts := <-r.reader.bytes
-
-		r.dispatch(bts)
-	}
-
-	return nil
-}
-
 func (r *Repl) log(format string, args ...interface{}) {
 	if r.debug != nil {
 		fmt.Fprintf(r.debug, format, args...)
@@ -1357,9 +1322,33 @@ func (r *Repl) updateSearchResult() {
 // exported methods
 ///////////////////
 
-// Start the REPL loop
+// Start the REPL loop.
+// The terminal is set to raw mode, so any further calls to fmt.Print() won't behave as expected and will conflict with your REPL.
 func (r *Repl) Run() error {
-	return r.run(false)
+	// the terminal needs to be in raw mode, so we can intercept the control sequences
+	// (the default canonical mode isn't good enough for repl's)
+	if err := r.MakeRaw(); err != nil {
+		return err
+	}
+
+	r.reader.start()
+
+	r.notifySizeChange()
+
+	r.printPrompt()
+
+	queryCursorPos() // get initial prompt position
+
+	// loop forever
+	for {
+		r.reader.read()
+
+		bts := <-r.reader.bytes
+
+		r.dispatch(bts)
+	}
+
+	return nil
 }
 
 // Quit the program cleanly

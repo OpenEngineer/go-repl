@@ -1,37 +1,36 @@
 # go-repl
 
-Golang REPL library.
+Golang REPL library, inspired by *xterm*
 
 Your REPL's using this library will enjoy the following features:
-* session history with *reverse-search*
-  * Ctrl-r: to start *reverse-search*
-  * most edit commands, except the most basic ones, exit the *reverse-search* mode
-  * use Up/Down to cycle through a filtered list of history entries (while in *reverse-search* mode)
-* the input buffer is redrawn when a resize is detected
-* status bar at bottom with current working dir and other info
-* truncation of very long inputs (status bar displays info about cursor position)
-* common edit and movement commands:
+* Session history with *reverse-search*
+  * Ctrl-R to start *reverse-search*
+  * Most edit commands, except the most basic ones, exit the *reverse-search* mode
+  * use Up/Down to cycle through a filtered list of history entries
+* The input buffer is redrawn when a resize is detected
+* Status bar at bottom with current working dir and other info
+* Truncation of very long inputs (status bar displays info about cursor position)
+* Common edit and movement commands:
    * Right/Left: move cursor one character at a time
+   * Ctrl-Right/Left: move cursor one word at a time
    * Up/Down: cycle through history
    * Backspace/Delete: works as expected
-   * Shift-Enter: enter newline into buffer without invoking Eval
-   * Ctrl-a or Home: move to start of buffer
-   * Ctrl-e or End: move to end of buffer
-   * Ctrl-w: delete preceding word
-   * Ctrl-q: delete following phrase
-   * Ctrl-Right/Left: move cursor one word at a time
-   * Ctrl-c or Esc: ignore current input
-   * Ctrl-d: quit
-   * Ctrl-u: clear buffer to start
-   * Ctrl-k: clear buffer to end
-   * Ctrl-l: reset prompt at top and redraw buffer
-   * Ctrl-y: insert previous deletion (from Ctrl-k, Ctrl-u, Ctrl-q or Ctrl-w)
+   * Shift-Enter: enter newline into buffer without invoking `Eval`
+   * Ctrl-A or Home: move to start of buffer
+   * Ctrl-E or End: move to end of buffer
+   * Ctrl-W: delete preceding word
+   * Ctrl-Q: delete following word
+   * Ctrl-C or Esc: ignore current input and reset buffer
+   * Ctrl-D: quit REPL
+   * Ctrl-U: clear buffer to start
+   * Ctrl-K: clear buffer to end
+   * Ctrl-L: reset prompt at top and redraw buffer
+   * Ctrl-Y: insert previous deletion (from Ctrl-K, Ctrl-U, Ctrl-Q or Ctrl-W)
 
-No dependency on *ncurses*. 
-
-Performance hasn't yet been optimized and I haven't yet tested all corner cases exhaustively.
-
-Might not work in Windows command prompt (keystroke codes could differ, ANSI escape sequences might not be supported, the method that sets terminal to raw mode might not work crossplatform).
+Notes: 
+*  Doesn't depend on *ncurses*
+*  Performance hasn't yet been optimized and I haven't yet tested all corner cases exhaustively
+*  Might not work in Windows command prompt (keystroke codes could differ, ANSI escape sequences might not be supported, the method that sets terminal to raw mode might not work)
 
 # Usage
 
