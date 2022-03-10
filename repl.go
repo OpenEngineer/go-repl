@@ -1,4 +1,4 @@
-// Lightweight Golang REPL library, inspired by *xterm*. You provide the `Eval` function, and `go-repl` does the rest.
+// Lightweight Golang REPL library, inspired by *xterm*. You provide the Eval function, and go-repl does the rest.
 package repl
 
 import (
@@ -50,7 +50,7 @@ type Repl struct {
 	debug *os.File
 }
 
-// Create a new `Repl` using your custom `Handler`.
+// Create a new Repl using your custom Handler.
 func NewRepl(handler Handler) *Repl {
 
 	r := &Repl{
@@ -1342,8 +1342,8 @@ func (r *Repl) updateSearchResult() {
 
 // Start the REPL loop.
 //
-// `Run` sets the terminal to raw mode, so any further calls to `fmt.Print`, or similar functions, won't behave as expected, and will garble your REPL.
-func (r *Repl) Run() error {
+// Loop sets the terminal to raw mode, so any further calls to fmt.Print or similar, won't behave as expected, and will garble your REPL.
+func (r *Repl) Loop() error {
 	// the terminal needs to be in raw mode, so we can intercept the control sequences
 	// (the default canonical mode isn't good enough for repl's)
 	if err := r.MakeRaw(); err != nil {
@@ -1375,19 +1375,19 @@ func (r *Repl) Run() error {
 //  2. returns the cursor to the appropriate position
 //  3. unsets terminal raw mode
 //
-// Important: use this method instead of `os.Exit`.
+// Important: use this method instead of os.Exit.
 func (r *Repl) Quit() {
 	r.quit()
 }
 
-// Unset the raw mode in case you want to run a curses-like command inside your REPL session (e.g. `vi` or `top`). Remember to call `MakeRaw` after the command finishes.
+// Unset the raw mode in case you want to run a curses-like command inside your REPL session (e.g. vi or top). Remember to call MakeRaw after the command finishes.
 func (r *Repl) UnmakeRaw() {
 	r.onEnd()
 
 	r.onEnd = nil
 }
 
-// Explicitely set the terminal back to raw mode after a call `UnmakeRaw`.
+// Explicitely set the terminal back to raw mode after a call to UnmakeRaw.
 func (r *Repl) MakeRaw() error {
 	// we need the term package as a platform independent way of setting the connected terminal emulator to raw mode
 	fd := int(os.Stdin.Fd())

@@ -79,7 +79,7 @@ func main() {
   h.r = repl.NewRepl(h)
 
   // start the terminal loop
-  if err := h.r.Run(); err != nil {
+  if err := h.r.Loop(); err != nil {
     log.Fatal(err)
   }
 }
