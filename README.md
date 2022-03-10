@@ -31,6 +31,7 @@ Notes:
 *  Doesn't depend on *ncurses*
 *  Performance hasn't yet been optimized and I haven't yet tested all corner cases exhaustively
 *  Might not work in Windows command prompt (keystroke codes could differ, ANSI escape sequences might not be supported, the method that sets terminal to raw mode might not work)
+*  No support for clipboards yet
 
 # Usage
 
